@@ -1,5 +1,3 @@
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
 
 
 /**
@@ -8,26 +6,19 @@ import org.kohsuke.args4j.CmdLineParser;
 
 public class Tail {
 
-    public static void main(String[] args) throws Exception {
-        Options options = new Options();
-        CmdLineParser parser = new CmdLineParser(options);
+    public static void main(String[] args) {
+        Parser parser = new Parser(args);
+        boolean flag = parser.numChar == -1;
+        int num = parser.numChar + parser.numString + 1;
+        if (num == -1) num = 10;
         try {
-            parser.parseArgument(args);
-        } catch (CmdLineException e) {
-            System.err.println("CmdLineException");
-            parser.printUsage(System.out);
+            if (parser.ofile != null) {
+                new WorkWithFiles(parser.files, parser.ofile, flag, num).workWithFiles();
+            } else System.out.println(new WorkWithFiles(parser.files, null, flag, num).workWithFiles());
+        } catch (Exception e){
+            System.err.println(e.toString());
+            parser.parser.printUsage(System.out);
         }
-
-        if (options.numString != -1 && options.numChar != -1) {
-            parser.printUsage(System.out);
-            return;
-        }
-        boolean flag = options.numChar == -1;
-        int num = options.numChar + options.numString + 1;
-        if (num == -1) num += 11;
-        if (options.ofile != null){
-            new WorkWithFiles(options.files,options.ofile, flag, num).workWithFiles();
-        } else System.out.println( new WorkWithFiles(options.files, null, flag, num).workWithFiles() );
     }
 }
 

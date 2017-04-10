@@ -2,9 +2,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by lixir on 08.04.2017.
@@ -23,9 +21,9 @@ public class WorkWithFiles {
         this.num = num;
     }
 
-    public ArrayList<String> reader() {
+    private List<String> reader() {
         if (files.size() == 0) return new ArrayList<String>();
-        ArrayList<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         for (int i = 0; i < files.size(); i++) {
             StringBuilder text = new StringBuilder();
             String fileName = files.get(i);
@@ -46,7 +44,7 @@ public class WorkWithFiles {
     }
 
 
-    public void writer(String text) {
+    private void writer(String text) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(ofile))) {
             writer.write(text);
         } catch (Exception e) {
@@ -55,8 +53,7 @@ public class WorkWithFiles {
     }
 
 
-    public ArrayList<String> editor(ArrayList<String> fileText) {
-        if (fileText.size() == 0) return new ArrayList<String>();
+    private List<String> editor(List<String> fileText) {
         for (int i = 0; i < fileText.size(); i++) {
             StringBuilder text = new StringBuilder();
             String element = fileText.get(i);
@@ -75,19 +72,30 @@ public class WorkWithFiles {
     }
 
     public String workWithFiles(){
-        ArrayList<String> list = reader();
-        list = editor(list);
+        List<String> list = reader();
         StringBuilder sb = new StringBuilder();
+        if (files.size() == 0){
+            Scanner in = new Scanner(System.in);
+            String line = in.nextLine();
+            sb.append(line);
+            line = in.nextLine();
+            while(!line.isEmpty()) {
+                sb.append("\n" + line);
+                line = in.nextLine();
+            }
+            list.add(sb.toString());
+            sb.delete(0, sb.length());
+        }
+        list = editor(list);
+
         if (files.size() > 1) for (int i = 0; i < files.size(); i++){
             sb.append( "\n" + files.get(i) + "\n" + list.get(i) + "\n");
-        } else if (files.size() == 1) {
-            sb.append(list.get(0));
-        } else {
-            Scanner in = new Scanner(System.in);
-            String temp = in.nextLine();
-            sb.append(editor(new ArrayList<String>(){{add(temp);}}).get(0));
+        } else sb.append(list.get(0));
+
+        if (ofile != null) {
+            writer(sb.toString());
+            return "";
         }
-        if (ofile != null) writer(sb.toString());
         return sb.toString();
     }
 }
