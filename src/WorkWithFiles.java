@@ -90,7 +90,6 @@ public class WorkWithFiles {
 
     public void workWithFiles(){
         List<String> list = reader();
-        StringBuilder sb = new StringBuilder();
         writer(editor(list));
     }
 }
