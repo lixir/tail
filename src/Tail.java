@@ -12,7 +12,7 @@ public class Tail {
         int num = parser.numChar + parser.numString + 1;
         if (num == -1) num = 10;
         try {
-            new WorkWithFiles(parser.files, null, flag, num).workWithFiles();
+            new WorkWithFiles(parser.files, parser.ofile, flag, num).workWithFiles();
         } catch (Exception e){
             System.err.println(e.toString());
             parser.parser.printUsage(System.out);

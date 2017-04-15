@@ -65,7 +65,7 @@ public class WorkWithFiles {
     }
 
 
-    private List<String> editor(List<String> fileText) {
+    private String editor(List<String> fileText) {
         for (int i = 0; i < fileText.size(); i++) {
             StringBuilder text = new StringBuilder();
             String element = fileText.get(i);
@@ -80,17 +80,17 @@ public class WorkWithFiles {
             }
             fileText.set(i,text.toString());
         }
-        return fileText;
+
+        StringBuilder sb = new StringBuilder();
+        if (files.size() > 1) for (int i = 0; i < files.size(); i++){
+            sb.append( "\n" + files.get(i) + "\n" + fileText.get(i) + "\n");
+        } else sb.append(fileText.get(0));
+        return sb.toString();
     }
 
     public void workWithFiles(){
         List<String> list = reader();
         StringBuilder sb = new StringBuilder();
-        list = editor(list);
-        if (files.size() > 1) for (int i = 0; i < files.size(); i++){
-            sb.append( "\n" + files.get(i) + "\n" + list.get(i) + "\n");
-        } else sb.append(list.get(0));
-
-        writer(sb.toString());
+        writer(editor(list));
     }
 }
