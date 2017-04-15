@@ -31,7 +31,9 @@ public class Parser {
             parser.parseArgument(args);
         } catch (CmdLineException e) {
             System.err.println("CmdLineException");
+            System.err.println(e.getMessage());
             parser.printUsage(System.out);
+            System.exit(1);
         }
     }
 }

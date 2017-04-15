@@ -12,14 +12,6 @@ import static org.junit.Assert.*;
 public class WorkWithFilesTest {
     private final WorkWithFiles wwf = new WorkWithFiles(new ArrayList<String>(){{ add("files\\input.txt");}},
             "files\\output.txt", true, 8);
-    private final WorkWithFiles wwf1 = new WorkWithFiles(new ArrayList<String>(){{ add("files\\input.txt");}},
-            null, false, 8);
-    private final WorkWithFiles wwf2 = new WorkWithFiles(new ArrayList<String>(){
-        {
-        add("files\\input.txt");
-        add("files\\input1.txt");
-        }
-    }, null, false, 8);
     private final List<String> list = new ArrayList<String>(){
         { add("22222222222222222222222222222222\n33333333333333333333333333333333" +
             "\n44444444444444444444444444444444\n55555555555555555555555555555555" +
@@ -31,8 +23,6 @@ public class WorkWithFilesTest {
 
     @org.junit.Test
     public void workWithFileTest() throws Exception{
-        assertEquals("99999999" ,wwf1.workWithFiles());
-
         wwf.workWithFiles();
         StringBuilder text = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader("files\\output.txt"))) {
@@ -44,6 +34,5 @@ public class WorkWithFilesTest {
             }
         }
         assertEquals(list.get(0), text.toString());
-        assertEquals("\nfiles\\input.txt\n99999999\n\nfiles\\input1.txt\nrrrrrrrr\n", wwf2.workWithFiles());
     }
 }

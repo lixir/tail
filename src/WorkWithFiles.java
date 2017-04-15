@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -21,35 +18,50 @@ public class WorkWithFiles {
         this.num = num;
     }
 
-    private List<String> reader() {
-        if (files.size() == 0) return new ArrayList<String>();
-        List<String> result = new ArrayList<>();
-        for (int i = 0; i < files.size(); i++) {
-            StringBuilder text = new StringBuilder();
-            String fileName = files.get(i);
-            try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-                String line = reader.readLine();
+    private StringBuilder fileRead(BufferedReader reader)  throws Exception{
+        String line = reader.readLine();
+        StringBuilder text = new StringBuilder();
+        while (line != null) {
+            text.append(line);
+            line = reader.readLine();
+            if (line != null) text.append("\n");
+        }
+        return text;
+    }
 
-                while (line != null) {
-                    text.append(line);
-                    line = reader.readLine();
-                    if (line != null) text.append("\n");
-                }
+    private List<String> reader() {
+        StringBuilder text = new StringBuilder();
+        List<String> result = new ArrayList<>();
+        if (files.size() == 0) {
+            try {
+                InputStreamReader reader = new InputStreamReader(System.in);
+                result.add(fileRead(new BufferedReader(reader)).toString());
+            }catch (Exception e){
+                System.err.println(e.toString());
+                System.exit(1);
+            }
+        }
+        for (String fileName : files) {
+            try(BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+                text = fileRead(reader);
             } catch (Exception e) {
                 System.err.println(e.toString());
+                System.exit(1);
             }
-            result.add(i, text.toString());
+            result.add(text.toString());
         }
         return result;
     }
 
 
     private void writer(String text) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ofile))) {
+        if (ofile != null) try (BufferedWriter writer = new BufferedWriter(new FileWriter(ofile))) {
             writer.write(text);
         } catch (Exception e) {
             System.err.println(e.toString());
+            System.exit(1);
         }
+        if (ofile == null) System.out.println(text);
     }
 
 
@@ -71,31 +83,14 @@ public class WorkWithFiles {
         return fileText;
     }
 
-    public String workWithFiles(){
+    public void workWithFiles(){
         List<String> list = reader();
         StringBuilder sb = new StringBuilder();
-        if (files.size() == 0){
-            Scanner in = new Scanner(System.in);
-            String line = in.nextLine();
-            sb.append(line);
-            line = in.nextLine();
-            while(!line.isEmpty()) {
-                sb.append("\n" + line);
-                line = in.nextLine();
-            }
-            list.add(sb.toString());
-            sb.delete(0, sb.length());
-        }
         list = editor(list);
-
         if (files.size() > 1) for (int i = 0; i < files.size(); i++){
             sb.append( "\n" + files.get(i) + "\n" + list.get(i) + "\n");
         } else sb.append(list.get(0));
 
-        if (ofile != null) {
-            writer(sb.toString());
-            return "";
-        }
-        return sb.toString();
+        writer(sb.toString());
     }
 }
